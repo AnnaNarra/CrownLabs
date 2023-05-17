@@ -15,8 +15,7 @@
   when: ansible_architecture != 'i386'
 
 - name: Let non root to use gns3
-  debconf:
-    name='ubridge'
+  debconf: name='ubridge'
     question='ubridge/install-setuid'
     vtype='boolean'
     value='true'
@@ -31,9 +30,9 @@
     state: present
   vars:
     gns3_packages:
-    - gns3-gui
-    - gns3-server
-    - gns3-iou
+      - gns3-gui
+      - gns3-server
+      - gns3-iou
 
 - name: Add the local user to the ubridge, libvirt and kvm groups
   user:
@@ -57,15 +56,15 @@
     remote_src: yes
     owner: root
     group: root
-    mode: '0644'
+    mode: "0644"
     force: no
 
 - name: Make libvirtd.target start after network-online.target
   lineinfile:
     path: /etc/systemd/system/libvirtd.service
     state: present
-    regexp: '^After=network.target'
-    line: 'After=network-online.target'
+    regexp: "^After=network.target"
+    line: "After=network-online.target"
 
 - name: Pull the network-multitool docker image
   docker_image:
@@ -78,4 +77,4 @@
     dest: /home/{{ ansible_user }}/Desktop
     owner: "{{ ansible_user }}"
     group: "{{ ansible_user }}"
-    mode: '0644'
+    mode: "0644"
