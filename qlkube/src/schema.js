@@ -1,4 +1,4 @@
-const { createGraphQlSchema } = require('oasgraph');
+const { createGraphQLSchema } = require('openapi-to-graphql');
 const { decorateBaseSchema } = require('./decorateBaseSchema.js');
 const { wrappers } = require('./wrappers');
 
@@ -23,7 +23,7 @@ exports.createSchema = async (oas, kubeApiUrl, token) => {
 };
 
 async function oasToGraphQlSchema(oas, kubeApiUrl, token) {
-  const { schema } = await createGraphQlSchema(oas, {
+  const { schema } = await createGraphQLSchema(oas, {
     baseUrl: kubeApiUrl,
     viewer: false,
     headers: {

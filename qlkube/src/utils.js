@@ -1,4 +1,4 @@
-const { ForbiddenError } = require('apollo-server-core');
+const { ForbiddenError } = require('@apollo/server');
 
 function capitalizeType(name) {
   return name[0].toUpperCase() + name.slice(1);

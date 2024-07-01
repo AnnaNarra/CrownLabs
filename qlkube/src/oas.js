@@ -1,17 +1,18 @@
-const got = require('got');
+const { json } = require('express');
 const promiseAny = require('promise-any');
 const logger = require('pino')({ useLevelLabels: true });
 
-const openApiPaths = ['/openapi/v2', '/swagger.json'];
+const openApiPaths = ['openapi/v2', 'swagger.json'];
 
 // execute parallel requests to possible open api endpoints and return first success
 module.exports = async function getOpenApiSpec(url, token) {
+  const { got } = await import('got');
   let gotProms = [];
   for (let p of openApiPaths) {
-    const gotProm = got(p, {
-      baseUrl: url,
-      json: true,
-      timeout: 5 * 1000,
+    const gotProm = await got(p, {
+      prefixUrl: url,
+      responseType: 'json',
+      timeout: { request: 5000 },
       headers: token ? { Authorization: `Bearer ${token}` } : undefined,
     })
       .then(r => {
@@ -22,11 +23,15 @@ module.exports = async function getOpenApiSpec(url, token) {
         return r.body;
       })
       .catch(err => {
-        logger.info(
-          { cause: err.message, url, path: p },
-          'failed to retrieve open api spec from this path - will try another'
-        );
-        throw err;
+        if (err.response && err.response.statusCode === 404) {
+          logger.info(
+            { cause: err.message, url, path: p },
+            'failed to retrieve open api spec from this path - will try another'
+          );
+          return null;
+        } else {
+          throw err;
+        }
       });
     gotProms.push(gotProm);
   }

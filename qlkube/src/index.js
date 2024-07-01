@@ -1,10 +1,20 @@
-const { ApolloServer } = require('apollo-server-express');
+const { ApolloServer } = require('@apollo/server');
+const { expressMiddleware } = require('@apollo/server/express4');
+const {
+  ApolloServerPluginDrainHttpServer,
+} = require('@apollo/server/plugin/drainHttpServer');
 const compression = require('compression');
 const dotenv = require('dotenv');
 const express = require('express');
 const fs = require('fs').promises;
 const { printSchema } = require('graphql');
+const {
+  ApolloServerPluginLandingPageGraphQLPlayground,
+} = require('@apollo/server-plugin-landing-page-graphql-playground');
 const { createServer } = require('http');
+const { WebSocketServer } = require('ws');
+const bodyParser = require('body-parser');
+const { useServer } = require('graphql-ws/lib/use/ws');
 const logger = require('pino')({ useLevelLabels: true });
 const { setupSubscriptions } = require('./decorateSubscription.js');
 const getOpenApiSpec = require('./oas');
@@ -46,10 +56,36 @@ async function main() {
     process.exit(1);
   }
 
+  const app = express();
+  app.use(compression());
+  app.use(bodyParser.json());
+
+  app.get('/schema', (req, res) => {
+    res.setHeader('content-type', 'text/plain');
+    res.send(printSchema(schema));
+  });
+  app.get('/healthz', (req, res) => {
+    res.sendStatus(200);
+  });
+
+  const httpServer = createServer(app);
+
   const server = new ApolloServer({
     schema,
     playground: true,
-    plugins: [graphqlQueryRegistry],
+    plugins: [
+      ApolloServerPluginDrainHttpServer({ httpServer: httpServer }),
+      ApolloServerPluginLandingPageGraphQLPlayground(),
+      {
+        async serverWillStart() {
+          return {
+            async drainServer() {
+              await serverCleanup.dispose();
+            },
+          };
+        },
+      },
+    ],
     formatError: error => {
       try {
         const msgs = [...error.message.match(/(\d+)\s*\-(.*)$/)];
@@ -84,7 +120,7 @@ async function main() {
       },
     },
 
-    context: ({ req, connection }) => {
+    context: async ({ req, connection }) => {
       if (connection) {
         const { token } = connection.context;
         return { token };
@@ -96,30 +132,32 @@ async function main() {
     },
   });
 
-  const app = express();
-  app.use(compression());
-  app.get('/schema', (req, res) => {
-    res.setHeader('content-type', 'text/plain');
-    res.send(printSchema(schema));
+  await server.start();
+
+  app.use(
+    '/',
+    expressMiddleware(server, {
+      context: async ({ req }) => {
+        const token = getBearerToken(req.headers);
+        return { token };
+      },
+    })
+  );
+
+  const wsServer = new WebSocketServer({
+    server: httpServer,
+    path: '/subscriptions',
   });
-  app.get('/healthz', (req, res) => {
-    res.sendStatus(200);
-  });
-  server.applyMiddleware({
-    app,
-    path: '/',
-  });
-  const httpServer = createServer(app);
-  server.installSubscriptionHandlers(httpServer);
+  const serverCleanup = useServer({ schema }, wsServer);
+
+  //server.installSubscriptionHandlers(httpServer);
 
   const PORT = process.env.CROWNLABS_QLKUBE_PORT || 8080;
 
   httpServer.listen({ port: PORT }, () => {
+    console.log(`🚀 Server ready at http://localhost:${PORT}/`);
     console.log(
-      `🚀 Server ready at http://localhost:${PORT}${server.graphqlPath}`
-    );
-    console.log(
-      `🚀 Subscriptions ready at ws://localhost:${PORT}${server.subscriptionsPath}`
+      `🚀 Subscriptions ready at ws://localhost:${PORT}/subscriptions`
     );
   });
 
