@@ -1,0 +1,19 @@
+query instanceSnapshotList($tenantNamespace: String!) {
+  instanceSnapshots: listCrownlabsPolitoItV1alpha2NamespacedInstanceSnapshot(
+    namespace: $tenantNamespace
+  ) {
+    snapshots: items {
+      metadata {
+        namespace
+        name
+      }
+      spec {
+        imageName
+        instanceRef{
+          name
+          namespace
+        }
+      }
+    }
+  }
+}

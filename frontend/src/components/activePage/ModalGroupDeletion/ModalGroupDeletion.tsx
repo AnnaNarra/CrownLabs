@@ -2,7 +2,7 @@ import { DeleteOutlined } from '@ant-design/icons';
 import { Divider } from 'antd';
 import Button from 'antd-button-color';
 import { Dispatch, FC, SetStateAction, useState } from 'react';
-import { ReactComponent as SvgInfinite } from '../../../assets/infinite.svg';
+import SvgInfinite from '../../../assets/infinite.svg?react';
 import { WorkspaceRole } from '../../../utils';
 import { ModalAlert } from '../../common/ModalAlert';
 
@@ -78,7 +78,8 @@ const ModalGroupDeletion: FC<IModalGroupDeletionProps> = ({ ...props }) => {
   const buttons = [
     <Button
       key="destroy_all"
-      type="danger"
+      type="primary"
+      danger
       shape="round"
       size="middle"
       disabled={!confirmDeletion}

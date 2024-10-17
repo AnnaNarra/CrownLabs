@@ -51,7 +51,7 @@ const UploadProgressErrorsModal: FC<IUploadProgressErrorsModal> = props => {
         />
       )}
       <Modal
-        visible={showModal}
+        open={showModal}
         closable={true}
         onCancel={() => setShowModal(false)}
       >

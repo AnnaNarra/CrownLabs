@@ -1,3 +1,4 @@
+import { ConfigProvider, theme } from 'antd';
 import {
   createContext,
   FC,
@@ -6,7 +7,7 @@ import {
   useState,
 } from 'react';
 
-const LOCALSTORAGE_IS_DARK_THEME_KEY = 'REACT_APP_IS_DARK_THEME';
+const LOCALSTORAGE_IS_DARK_THEME_KEY = 'VITE_APP_IS_DARK_THEME';
 const MEDIA_QUERY_PREFER_LIGHT_SCHEMA = '(prefers-color-scheme: light)';
 const MEDIA_QUERY_PREFER_DARK_SCHEMA = '(prefers-color-scheme: dark)';
 
@@ -21,19 +22,21 @@ export const ThemeContext = createContext<IThemeContext>({
 });
 
 const ThemeContextProvider: FC<PropsWithChildren<{}>> = props => {
+  const { defaultAlgorithm, darkAlgorithm } = theme;
+
   const { children } = props;
 
   const [isDarkTheme, setIsDarkTheme] = useState(() => {
     // first check if user has already set theme
     const localIsDarkTheme = localStorage.getItem(
-      LOCALSTORAGE_IS_DARK_THEME_KEY
+      LOCALSTORAGE_IS_DARK_THEME_KEY,
     );
     if (localIsDarkTheme) {
       return JSON.parse(localIsDarkTheme);
     } else {
       // if not, check if browser/device has theme preference
       const lightMediaQuery = window.matchMedia(
-        MEDIA_QUERY_PREFER_LIGHT_SCHEMA
+        MEDIA_QUERY_PREFER_LIGHT_SCHEMA,
       ).matches;
       if (lightMediaQuery) return false;
     }
@@ -46,14 +49,16 @@ const ThemeContextProvider: FC<PropsWithChildren<{}>> = props => {
     if (isDarkTheme) {
       localStorage.setItem(
         LOCALSTORAGE_IS_DARK_THEME_KEY,
-        JSON.stringify(true)
+        JSON.stringify(true),
       );
       document.body.classList.remove('light');
+      document.body.classList.add('dark');
     } else {
       localStorage.setItem(
         LOCALSTORAGE_IS_DARK_THEME_KEY,
-        JSON.stringify(false)
+        JSON.stringify(false),
       );
+      document.body.classList.remove('dark');
       document.body.classList.add('light');
     }
   }, [isDarkTheme]);
@@ -79,7 +84,13 @@ const ThemeContextProvider: FC<PropsWithChildren<{}>> = props => {
 
   return (
     <ThemeContext.Provider value={{ isDarkTheme, setIsDarkTheme }}>
-      {children}
+      <ConfigProvider
+        theme={{
+          algorithm: isDarkTheme ? darkAlgorithm : defaultAlgorithm,
+        }}
+      >
+        {children}
+      </ConfigProvider>
     </ThemeContext.Provider>
   );
 };

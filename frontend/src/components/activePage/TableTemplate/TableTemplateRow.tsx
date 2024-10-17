@@ -4,13 +4,12 @@ import {
   DesktopOutlined,
   MoreOutlined,
 } from '@ant-design/icons';
-import { Dropdown, Menu, Space, Tooltip, Typography } from 'antd';
+import { Dropdown, Menu, Space, Tooltip, Typography, Badge } from 'antd';
 import Button from 'antd-button-color';
 import { FC, useState } from 'react';
-import { ReactComponent as SvgInfinite } from '../../../assets/infinite.svg';
+import SvgInfinite from '../../../assets/infinite.svg?react';
 import { Template, WorkspaceRole } from '../../../utils';
 import { DropDownAction } from '../../../utilsLogic';
-import Badge from '../../common/Badge';
 import ModalGroupDeletion from '../ModalGroupDeletion/ModalGroupDeletion';
 
 const { Text } = Typography;
@@ -57,7 +56,7 @@ const TableTemplateRow: FC<ITableTemplateRowProps> = ({ ...props }) => {
               style={{ fontSize: '24px' }}
             />
           )}
-          <Badge size="small" value={nActive} className="mx-0" />
+          <Badge count={nActive} className="mx-0" color="blue" />
           <Text className="font-bold w-28 xs:w-48 sm:w-max" ellipsis>
             {name}
           </Text>
@@ -83,7 +82,8 @@ const TableTemplateRow: FC<ITableTemplateRowProps> = ({ ...props }) => {
           )}
         </Space>
         <Button
-          type="danger"
+          type="primary"
+          danger
           shape="round"
           size="middle"
           icon={<DeleteOutlined />}

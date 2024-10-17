@@ -90,6 +90,7 @@ const RowInstanceActions: FC<IRowInstanceActionsProps> = ({ ...props }) => {
             <RowInstanceActionsPersistent
               instance={instance}
               extended={extended}
+              viewMode={viewMode}
             />
           )}
           <RowInstanceActionsDefault
@@ -104,7 +105,7 @@ const RowInstanceActions: FC<IRowInstanceActionsProps> = ({ ...props }) => {
       <Modal
         title="SSH Connection"
         width={550}
-        visible={sshModal}
+        open={sshModal}
         onOk={() => setSshModal(false)}
         onCancel={() => setSshModal(false)}
         footer={<Button onClick={() => setSshModal(false)}>Close</Button>}

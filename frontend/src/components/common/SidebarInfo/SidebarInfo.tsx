@@ -52,7 +52,7 @@ const SidebarInfo: FC<ISidebarInfoProps> = ({ ...props }) => {
       placement={position}
       closable={true}
       onClose={() => setShow(false)}
-      visible={show}
+      open={show}
       width={350}
       footer={
         <>

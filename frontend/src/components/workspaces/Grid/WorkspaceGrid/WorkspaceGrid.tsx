@@ -2,7 +2,7 @@ import { FC } from 'react';
 import { WorkspaceGridItem } from '../WorkspaceGridItem';
 
 export interface IWorkspaceGridProps {
-  workspaceItems: Array<{ id: number; title: string; waitingTenants?: number }>;
+  workspaceItems: Array<{ id: number; title: string }>;
   selectedWs: number;
   onClick: (id: number) => void;
 }
@@ -17,18 +17,10 @@ const WorkspaceGrid: FC<IWorkspaceGridProps> = ({ ...props }) => {
             id={workspaceItem.id}
             title={workspaceItem.title}
             isActive={selectedWs === workspaceItem.id}
-            badgeValue={workspaceItem.waitingTenants}
             onClick={onClick}
           />
         </div>
       ))}
-      <WorkspaceGridItem
-        id={-2}
-        title="Add Workspace"
-        previewName="+"
-        isActive={selectedWs === -2}
-        onClick={onClick}
-      />
     </div>
   );
 };

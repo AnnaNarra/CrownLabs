@@ -105,7 +105,7 @@ const UploadProgressModal: FC<IUploadProgressModalInterface> = props => {
 
   return (
     <Modal
-      visible={props.show}
+      open={props.show}
       width="800px"
       closable={false}
       footer={[

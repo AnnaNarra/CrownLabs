@@ -32,7 +32,7 @@ const ModalAlert: FC<IModalAlertProps> = ({ ...props }) => {
       footer={false}
       centered
       title={headTitle}
-      visible={show}
+      open={show}
       onCancel={() => setShow(false)}
     >
       <Alert message={message} description={description} type={type} showIcon />

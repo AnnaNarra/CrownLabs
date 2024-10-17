@@ -1,26 +1,19 @@
 import { FC } from 'react';
 import { Row, Col } from 'antd';
 import './WorkspaceGridItem.less';
-import Badge from '../../../common/Badge';
 
 export interface IWorkspaceGridItemProps {
   id: number;
   title: string;
   isActive: boolean;
-  badgeValue?: number;
-  previewName?: string;
   onClick: (id: number) => void;
 }
 
 const WorkspaceGridItem: FC<IWorkspaceGridItemProps> = ({ ...props }) => {
-  const { id, title, isActive, badgeValue, previewName, onClick } = props;
-
-  const preview = (
-    previewName ? previewName : title[0] + title[1]
-  ).toUpperCase();
+  const { id, title, isActive, onClick } = props;
 
   return (
-    <Row className="sm:px-0 md:px-4">
+    <Row>
       <Col span={24} className="flex justify-center pb-2">
         <button
           className={`cursor-pointer row shadow-lg h-24 w-24 2xl:h-28 2xl:w-28 workspaceitem ${
@@ -34,15 +27,8 @@ const WorkspaceGridItem: FC<IWorkspaceGridItemProps> = ({ ...props }) => {
             className="cursor-pointer font-mono font-semibold flex justify-center items-center pt-2 "
             style={{ fontSize: '32pt', color: '#141414' }}
           >
-            {preview}
+            {title[0].toUpperCase() + title[1].toUpperCase()}
           </label>
-          {badgeValue && (
-            <Badge
-              value={badgeValue}
-              size="middle"
-              className="absolute top-0 right-0"
-            />
-          )}
         </button>
       </Col>
       <Col span={24} className="flex justify-center pb-0">

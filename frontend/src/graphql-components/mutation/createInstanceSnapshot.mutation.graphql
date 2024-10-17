@@ -1,0 +1,41 @@
+mutation createInstanceSnapshot(
+  $snapshotName: String!
+  $snapshotNamespace: String!
+  $imageName: String!
+  $instanceName: String!
+  $instanceNamespace: String!
+  $annotations: JSON!
+) {
+  createdSnapshot: createCrownlabsPolitoItV1alpha2NamespacedInstanceSnapshot(
+    namespace: $snapshotNamespace
+    itPolitoCrownlabsV1alpha2InstanceSnapshotInput: {
+        kind: "InstanceSnapshot"
+        apiVersion: "crownlabs.polito.it/v1alpha2"
+        metadata: { 
+            name: $snapshotName, 
+            namespace: $snapshotNamespace 
+            annotations: $annotations
+        }
+        spec: {
+            imageName: $imageName
+            instanceRef: { 
+                name: $instanceName, 
+                namespace: $instanceNamespace 
+            }
+        }
+    }
+  ) {
+    metadata {
+      name
+      namespace
+      annotations
+    }
+    spec {
+      imageName
+      instanceRef {
+        name
+        namespace
+      }
+    }
+  }
+}

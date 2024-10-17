@@ -4,7 +4,6 @@ import { Spin } from 'antd';
 
 import { useContext, useEffect, useState } from 'react';
 import { FC } from 'react';
-import { AuthContext } from '../../../../contexts/AuthContext';
 import {
   useCreateInstanceMutation,
   useDeleteTemplateMutation,
@@ -27,6 +26,7 @@ import {
 } from '../../../../utilsLogic';
 import { TemplatesEmpty } from '../TemplatesEmpty';
 import { TemplatesTable } from '../TemplatesTable';
+import { useAuth } from 'react-oidc-context';
 
 export interface ITemplateTableLogicProps {
   tenantNamespace: string;
@@ -38,7 +38,9 @@ export interface ITemplateTableLogicProps {
 const fetchPolicy_networkOnly: FetchPolicy = 'network-only';
 
 const TemplatesTableLogic: FC<ITemplateTableLogicProps> = ({ ...props }) => {
-  const { userId } = useContext(AuthContext);
+  const auth = useAuth();
+
+  const userId = auth.user?.profile.preferred_username;
   const { makeErrorCatcher, apolloErrorCatcher, errorsQueue } =
     useContext(ErrorContext);
   const { tenantNamespace, workspaceNamespace, workspaceName, role } = props;
@@ -57,8 +59,8 @@ const TemplatesTableLogic: FC<ITemplateTableLogicProps> = ({ ...props }) => {
         data.instanceList?.instances
           ?.map(i => makeGuiInstance(i, userId))
           .sort((a, b) =>
-            (a.prettyName ?? '').localeCompare(b.prettyName ?? '')
-          ) ?? []
+            (a.prettyName ?? '').localeCompare(b.prettyName ?? ''),
+          ) ?? [],
       ),
     fetchPolicy: fetchPolicy_networkOnly,
   });
@@ -73,7 +75,7 @@ const TemplatesTableLogic: FC<ITemplateTableLogicProps> = ({ ...props }) => {
         },
         updateQuery: updateQueryOwnedInstancesQuery(
           setDataInstances,
-          userId ?? ''
+          userId ?? '',
         ),
       });
       return unsubscribe;
@@ -100,9 +102,9 @@ const TemplatesTableLogic: FC<ITemplateTableLogicProps> = ({ ...props }) => {
                 id: t?.metadata?.name ?? '',
                 name: t?.spec?.prettyName ?? '',
               },
-            })
+            }),
           )
-          .sort((a, b) => a.name.localeCompare(b.name)) ?? []
+          .sort((a, b) => a.name.localeCompare(b.name)) ?? [],
       ),
     fetchPolicy: fetchPolicy_networkOnly,
   });
@@ -154,7 +156,7 @@ const TemplatesTableLogic: FC<ITemplateTableLogicProps> = ({ ...props }) => {
                 workspaceName: workspaceName,
               }),
             ]
-          : old
+          : old,
       );
       return i;
     });

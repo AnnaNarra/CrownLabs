@@ -5,6 +5,7 @@ import { BoxHeaderSize } from '../../../utils';
 export interface IBoxProps {
   header?: BoxHeader;
   footer?: React.ReactNode;
+  children?: React.ReactNode;
 }
 
 export type BoxHeader = {

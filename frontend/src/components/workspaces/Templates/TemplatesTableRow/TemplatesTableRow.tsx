@@ -3,11 +3,11 @@ import {
   DesktopOutlined,
   PlayCircleOutlined,
 } from '@ant-design/icons';
-import { Space, Tooltip } from 'antd';
+import { Space, Tooltip, Badge } from 'antd';
 import Button from 'antd-button-color';
-import { FetchResult } from 'apollo-link';
+import { FetchResult } from '@apollo/client';
 import { FC, useContext, useState } from 'react';
-import { ReactComponent as SvgInfinite } from '../../../../assets/infinite.svg';
+import SvgInfinite from '../../../../assets/infinite.svg?react';
 import { ErrorContext } from '../../../../errorHandling/ErrorContext';
 import {
   CreateInstanceMutation,
@@ -16,7 +16,6 @@ import {
 } from '../../../../generated-types';
 import { TenantContext } from '../../../../contexts/TenantContext';
 import { Template, WorkspaceRole } from '../../../../utils';
-import Badge from '../../../common/Badge';
 import { ModalAlert } from '../../../common/ModalAlert';
 import { TemplatesTableRowSettings } from '../TemplatesTableRowSettings';
 
@@ -26,7 +25,7 @@ export interface ITemplatesTableRowProps {
   totalInstances: number;
   editTemplate: (id: string) => void;
   deleteTemplate: (
-    id: string
+    id: string,
   ) => Promise<
     FetchResult<
       DeleteTemplateMutation,
@@ -36,7 +35,7 @@ export interface ITemplatesTableRowProps {
   >;
   deleteTemplateLoading: boolean;
   createInstance: (
-    id: string
+    id: string,
   ) => Promise<
     FetchResult<
       CreateInstanceMutation,
@@ -134,7 +133,8 @@ const TemplatesTableRow: FC<ITemplatesTableRowProps> = ({ ...props }) => {
             key={1}
             shape="round"
             className="ml-2 w-24"
-            type="danger"
+            type="primary"
+            danger
             loading={deleteTemplateLoading}
             onClick={() =>
               deleteTemplate(template.id)
@@ -188,7 +188,7 @@ const TemplatesTableRow: FC<ITemplatesTableRowProps> = ({ ...props }) => {
         </div>
         <Space size="small">
           <Badge
-            value={template.instances.length}
+            text={template.instances.length}
             size="small"
             className="mx-2"
           />

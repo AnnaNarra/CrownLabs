@@ -37,7 +37,7 @@ const ErrorHandler: FC<IErrorHandlerProps> = ({ ...props }) => {
             ''
           )
         }
-        visible={show}
+        open={show}
         closable={false}
         width={800}
       >
@@ -54,7 +54,8 @@ const ErrorHandler: FC<IErrorHandlerProps> = ({ ...props }) => {
               size="large"
               shape="round"
               icon={<CloseOutlined />}
-              type="danger"
+              type="primary"
+              danger
               onClick={dismiss}
             >
               Dismiss

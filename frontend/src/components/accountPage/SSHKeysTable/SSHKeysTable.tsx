@@ -65,7 +65,8 @@ const SSHKeysTable: FC<ISSHKeysTableProps> = props => {
                     key={1}
                     shape="round"
                     className="ml-2 w-24"
-                    type="danger"
+                    type="primary"
+                    danger
                     onClick={() =>
                       onDeleteKey(record)
                         .then(() => setShowDeleteModalConfirm(false))

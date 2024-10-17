@@ -26,10 +26,10 @@ const ActiveView: FC<IActiveViewProps> = ({ ...props }) => {
   const [showAlert, setShowAlert] = useState(false);
   const [searchField, setSearchField] = useState('');
   const [currentView, setCurrentView] = useState<WorkspaceRole>(
-    managerView ? (view.get() as WorkspaceRole) : WorkspaceRole.user
+    managerView ? (view.get() as WorkspaceRole) : WorkspaceRole.user,
   );
   const [showAdvanced, setShowAdvanced] = useState(
-    !managerView || advanced.get() !== 'false'
+    !managerView || advanced.get() !== 'false',
   );
   const [showCheckbox, setShowCheckbox] = useState(false);
   const [selectiveDestroy, setSelectiveDestroy] = useState<string[]>([]);

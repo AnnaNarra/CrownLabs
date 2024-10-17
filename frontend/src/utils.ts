@@ -5,7 +5,6 @@ export type someKeysOf<T> = { [key in keyof T]?: T[key] };
 export enum WorkspaceRole {
   user = 'user',
   manager = 'manager',
-  candidate = 'candidate',
 }
 export type BadgeSize = 'small' | 'middle' | 'large';
 export type User = { tenantId: string; tenantNamespace: string };
@@ -16,7 +15,6 @@ export type Workspace = {
   prettyName: string;
   role: WorkspaceRole;
   templates?: Array<Template>;
-  waitingTenants?: number;
 };
 export type Resources = {
   cpu: number;
@@ -60,22 +58,8 @@ export enum LinkPosition {
   NavbarButton,
 }
 
-export enum WorkspacesAvailableAction {
-  None,
-  Join,
-  AskToJoin,
-  Waiting,
-}
-
-export type WorkspacesAvailable = {
-  name: string;
-  prettyName: string;
-  role: WorkspaceRole | null;
-  action?: WorkspacesAvailableAction;
-};
-
 export const generateAvatarUrl = (style: string, seed: string) => {
-  return `https://api.dicebear.com/8.x/${style}/svg?seed=${stringHash(seed)}`;
+  return `https://api.dicebear.com/7.x/${style}/svg?seed=${stringHash(seed)}`;
 };
 
 export const stringHash = (s: string) => {
@@ -111,7 +95,7 @@ export function multiStringIncludes(needle: string, ...haystack: string[]) {
  * @returns a callback which accepts a value and toggles the presence of that value in the list
  */
 export function makeListToggler<T>(
-  setList: Dispatch<SetStateAction<Array<T>>>
+  setList: Dispatch<SetStateAction<Array<T>>>,
 ): (value: T, create: boolean) => void {
   return (value: T, create: boolean) => {
     setList(list =>
@@ -119,7 +103,7 @@ export function makeListToggler<T>(
         ? create
           ? list
           : list.filter(v => v !== value)
-        : [...list, value]
+        : [...list, value],
     );
   };
 }
@@ -146,6 +130,6 @@ export function filterUser(user: UserAccountPage, value: string) {
     user.name,
     user.surname,
     user.userid,
-    user.userid
+    user.userid,
   );
 }
