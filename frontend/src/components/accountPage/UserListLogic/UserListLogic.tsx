@@ -7,10 +7,10 @@ import {
 import { getTenantPatchJson } from '../../../graphql-components/utils';
 import UserList from '../UserList/UserList';
 import { makeRandomDigits, UserAccountPage, Workspace } from '../../../utils';
-import { AuthContext } from '../../../contexts/AuthContext';
 import { Role } from '../../../generated-types';
 import { ErrorContext } from '../../../errorHandling/ErrorContext';
 import { ErrorTypes, SupportedError } from '../../../errorHandling/utils';
+import { useAuth } from 'react-oidc-context';
 
 export interface IUserListLogicProps {
   workspace: Workspace;
@@ -19,7 +19,9 @@ const UserListLogic: FC<IUserListLogicProps> = props => {
   const { apolloErrorCatcher, makeErrorCatcher } = useContext(ErrorContext);
   const genericErrorCatcher = makeErrorCatcher(ErrorTypes.GenericError);
 
-  const { userId } = useContext(AuthContext);
+  const auth = useAuth();
+  const userId = auth.user?.profile.preferred_username;
+
   const { workspace } = props;
   const [loadingSpinner, setLoadingSpinner] = useState(false);
   const [errors, setErrors] = useState<any[]>([]);
@@ -66,7 +68,7 @@ const UserListLogic: FC<IUserListLogicProps> = props => {
               role: workspace?.role! as Role,
               name: workspace?.name! as string,
             })) || [],
-        })) || []
+        })) || [],
       );
     }
   }, [loading, data, workspace.name]);
@@ -138,7 +140,7 @@ const UserListLogic: FC<IUserListLogicProps> = props => {
                   lastName: user.surname,
                   workspaces,
                 },
-                user.userid
+                user.userid,
               ),
             },
             onError: apolloErrorCatcher,

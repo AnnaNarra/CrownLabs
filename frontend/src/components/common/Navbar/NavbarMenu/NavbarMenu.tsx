@@ -1,21 +1,24 @@
 import { CaretDownOutlined, LogoutOutlined } from '@ant-design/icons';
-import { Dropdown, Menu, Space } from 'antd';
+import { Dropdown, Space } from 'antd';
 import Button from 'antd-button-color';
 import { FC, useContext, useState } from 'react';
 import { Link, useLocation } from 'react-router-dom';
-import { logout } from '../../../../contexts/AuthContext';
 import { TenantContext } from '../../../../contexts/TenantContext';
 import { generateAvatarUrl } from '../../../../utils';
 import { RouteData } from '../Navbar';
+import { useAuth } from 'react-oidc-context';
+import { MenuProps } from 'antd/lib';
 
 export interface INavbarMenuProps {
   routes: Array<RouteData>;
 }
 
 const NavbarMenu: FC<INavbarMenuProps> = ({ ...props }) => {
+  const auth = useAuth();
+
   const { routes } = props;
   const { data } = useContext(TenantContext);
-  const tenantId = data?.tenant?.metadata?.name!;
+  const tenantId = data?.tenant?.metadata?.name ?? '[?]';
   const currentPath = useLocation().pathname;
 
   const [visible, setVisible] = useState(false);
@@ -34,57 +37,52 @@ const NavbarMenu: FC<INavbarMenuProps> = ({ ...props }) => {
     </svg>
   );
 
+  const items: MenuProps['items'] = [
+    {
+      key: 'welcome',
+      className: 'pointer-events-none text-center',
+      label: (
+        <>
+          Logged in as <b>{tenantId}</b>
+        </>
+      ),
+    },
+    ...routes.map(r => {
+      const isExtLink = r.path.indexOf('http') === 0;
+      return {
+        key: r.path,
+        label: (
+          <Link
+            target={isExtLink ? '_blank' : ''}
+            key={r.path}
+            to={{ pathname: isExtLink ? '' : r.path }}
+            rel={isExtLink ? 'noopener noreferrer' : ''}
+          >
+            <Space size="small">
+              {r.navbarMenuIcon}
+              {r.name}
+            </Space>
+          </Link>
+        ),
+      };
+    }),
+    {
+      key: 'logout',
+      onClick: () => auth.signoutSilent(),
+      icon: <LogoutOutlined />,
+      title: 'Logout',
+    },
+  ];
+
   return (
     <div className="flex justify-center items-center">
       <Dropdown
         overlayClassName="pt-1 pr-2 2xl:pr-0"
-        visible={visible}
-        onVisibleChange={handleVisibleChange}
-        placement="bottomCenter"
+        open={visible}
+        onOpenChange={handleVisibleChange}
+        placement="bottom"
         trigger={['click']}
-        overlay={
-          <Menu onClick={handleMenuClick} selectedKeys={[currentPath]}>
-            <Menu.Item
-              key="welcome"
-              className="pointer-events-none text-center"
-            >
-              Logged in as <b>{tenantId}</b>
-            </Menu.Item>
-            <Menu.Divider />
-            {routes.map(r => {
-              const isExtLink = r.path.indexOf('http') === 0;
-              return (
-                <Menu.Item
-                  key={r.path}
-                  className="text-center "
-                  onClick={() => isExtLink && window.open(r.path, '_blank')}
-                >
-                  <Link
-                    target={isExtLink ? '_blank' : ''}
-                    key={r.path}
-                    to={{ pathname: isExtLink ? '' : r.path }}
-                    rel={isExtLink ? 'noopener noreferrer' : ''}
-                  >
-                    <Space size="small">
-                      {r.navbarMenuIcon}
-                      {r.name}
-                    </Space>
-                  </Link>
-                </Menu.Item>
-              );
-            })}
-            <Menu.Divider />
-            <Menu.Item
-              onClick={logout}
-              className="text-center bg-opacity-60 hover:bg-opacity-100 hover:text-white bg-red-700"
-            >
-              <Space size="small">
-                <LogoutOutlined />
-                Logout
-              </Space>
-            </Menu.Item>
-          </Menu>
-        }
+        menu={{ items, onClick: handleMenuClick }}
       >
         <Button
           className="flex justify-center items-center px-2 ml-1 "

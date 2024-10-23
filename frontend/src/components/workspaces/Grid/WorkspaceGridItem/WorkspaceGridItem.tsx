@@ -1,7 +1,6 @@
 import { FC } from 'react';
-import { Row, Col } from 'antd';
+import { Row, Col, Badge } from 'antd';
 import './WorkspaceGridItem.less';
-import Badge from '../../../common/Badge';
 
 export interface IWorkspaceGridItemProps {
   id: number;
@@ -20,7 +19,7 @@ const WorkspaceGridItem: FC<IWorkspaceGridItemProps> = ({ ...props }) => {
   ).toUpperCase();
 
   return (
-    <Row className="sm:px-0 md:px-4">
+    <Row>
       <Col span={24} className="flex justify-center pb-2">
         <button
           className={`cursor-pointer row shadow-lg h-24 w-24 2xl:h-28 2xl:w-28 workspaceitem ${
@@ -38,8 +37,8 @@ const WorkspaceGridItem: FC<IWorkspaceGridItemProps> = ({ ...props }) => {
           </label>
           {badgeValue && (
             <Badge
-              value={badgeValue}
-              size="middle"
+              text={badgeValue}
+              size="default"
               className="absolute top-0 right-0"
             />
           )}

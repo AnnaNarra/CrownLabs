@@ -1,4 +1,4 @@
-import { ApolloError } from 'apollo-client';
+import { ApolloError } from '@apollo/client';
 import {
   createContext,
   FC,
@@ -7,7 +7,7 @@ import {
   useEffect,
   useState,
 } from 'react';
-import { AuthContext } from './AuthContext';
+import { useAuth } from 'react-oidc-context';
 import { ErrorContext } from '../errorHandling/ErrorContext';
 import { ErrorTypes } from '../errorHandling/utils';
 import {
@@ -39,8 +39,9 @@ export const TenantContext = createContext<ITenantContext>({
   refreshClock: () => null,
 });
 
-const TenantContextProvider: FC<PropsWithChildren<{}>> = props => {
-  const { userId } = useContext(AuthContext);
+const TenantContextProvider: FC<PropsWithChildren> = props => {
+  const auth = useAuth();
+  const userId = auth.user?.profile.preferred_username;
   const { children } = props;
 
   const [now, setNow] = useState(new Date());
@@ -52,10 +53,11 @@ const TenantContextProvider: FC<PropsWithChildren<{}>> = props => {
   const { loading, error, subscribeToMore } = useTenantQuery({
     variables: { tenantId: userId ?? '' },
     onCompleted: d => {
-      d!.tenant!.spec?.workspaces!.sort((a, b) =>
-        workspaceGetName(a!).localeCompare(workspaceGetName(b!))
+      const out = JSONDeepCopy(d);
+      out!.tenant!.spec?.workspaces?.sort((a, b) =>
+        workspaceGetName(a!).localeCompare(workspaceGetName(b!)),
       );
-      setData(JSONDeepCopy(d));
+      setData(out);
     },
     fetchPolicy: 'network-only',
     onError: apolloErrorCatcher,

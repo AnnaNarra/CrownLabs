@@ -4,20 +4,17 @@ This file describes the structure and general coding guidelines of the CrownLabs
 
 ## Setup
 
-Before starting set the necessary environment variables either using a `.env` file (preferred on windows) or by defining them on your local machine. To setup the repo, use the following commands ([yarn](https://yarnpkg.com/cli/install) use is mandatory).
+Before starting set the necessary environment variables either using a `.env` file (preferred on windows) or by defining them on your local machine. To setup the repo, use the following commands.
 
 ```bash
-# If you don't have yarn installed
-npm install -g yarn
-
 # install necessary packages
-yarn install
+npm install
 
 # To run the app locally
-yarn start
+npm run dev
 
 # To build the app locally
-yarn build-app
+npm run build
 
 ```
 
@@ -27,7 +24,7 @@ After the setup is complete, if you start the app locally and see the apiserver 
 
 Our frontend is a [React](https://it.reactjs.org/) application. We use [antd](https://ant.design/) as the main component library and [Tailwind](https://tailwindcss.com/) utilities to handle specific css scenarios (padding and margin). We chose to use [Typescript](https://www.typescriptlang.org/) to have a bettere development experience.
 
-The application is made to be deployed using docker and can be hosted on a custom subroute. The application takes some environment variables, each needs to have the `REACT_APP_CROWNLABS` prefix. In order to define environment variables at container run-time they need to be defined on the `window` object in the `public/config.js` file.
+The application is made to be deployed using docker and can be hosted on a custom subroute. The application takes some environment variables, each needs to have the `VITE_APP_CROWNLABS` prefix. In order to define environment variables at container run-time they need to be defined on the `window` object in the `public/config.js` file.
 
 ## CI checks
 

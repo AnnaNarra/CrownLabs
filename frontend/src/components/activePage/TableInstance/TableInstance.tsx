@@ -25,7 +25,7 @@ export interface ITableInstanceProps {
   handleManagerSorting?: (
     sortingType: string,
     sorting: number,
-    sortingTemplate: string
+    sortingTemplate: string,
   ) => void;
   selectiveDestroy?: string[];
   selectToDestroy?: (instanceId: string) => void;
@@ -185,7 +185,8 @@ const TableInstance: FC<ITableInstanceProps> = ({ ...props }) => {
       {extended && viewMode === WorkspaceRole.user && (
         <div className="w-full pt-5 flex justify-center ">
           <Button
-            type="danger"
+            type="primary"
+            danger
             shape="round"
             size="large"
             icon={<DeleteOutlined />}

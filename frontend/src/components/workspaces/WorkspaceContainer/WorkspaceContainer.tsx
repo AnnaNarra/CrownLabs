@@ -1,5 +1,5 @@
 import { PlusOutlined, UserSwitchOutlined } from '@ant-design/icons';
-import { Modal, Tooltip } from 'antd';
+import { Modal, Tooltip, Badge } from 'antd';
 import Button from 'antd-button-color';
 import { FC, useContext, useState } from 'react';
 import { ErrorContext } from '../../../errorHandling/ErrorContext';
@@ -15,7 +15,6 @@ import Box from '../../common/Box';
 import ModalCreateTemplate from '../ModalCreateTemplate';
 import { Image, Template } from '../ModalCreateTemplate/ModalCreateTemplate';
 import { TemplatesTableLogic } from '../Templates/TemplatesTableLogic';
-import Badge from '../../common/Badge';
 
 export interface IWorkspaceContainerProps {
   tenantNamespace: string;
@@ -31,7 +30,7 @@ const getImages = (dataImages: ImagesQuery) => {
       let versionsInImageName: Image[];
       if (registry === 'registry.internal.crownlabs.polito.it') {
         const latestVersion = `${ir?.name!}:${
-          ir?.versions?.sort().reverse()[0]
+          [...(ir?.versions ?? [])].sort().reverse()[0]
         }`;
         versionsInImageName = [
           {
@@ -134,7 +133,7 @@ const WorkspaceContainer: FC<IWorkspaceContainerProps> = ({ ...props }) => {
                 >
                   {workspace.waitingTenants && (
                     <Badge
-                      value={workspace.waitingTenants}
+                      text={workspace.waitingTenants}
                       size="small"
                       color="yellow"
                       className="absolute -top-2.5 -right-2.5"
@@ -172,7 +171,7 @@ const WorkspaceContainer: FC<IWorkspaceContainerProps> = ({ ...props }) => {
           destroyOnClose={true}
           title={`Users in ${workspace.prettyName} `}
           width="800px"
-          visible={showUserListModal}
+          open={showUserListModal}
           footer={null}
           onCancel={() => setShowUserListModal(false)}
         >

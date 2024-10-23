@@ -136,8 +136,8 @@ const Toolbox: FC<IToolboxProps> = ({ ...props }) => {
         }
         placement="bottomRight"
         trigger="click"
-        visible={searchPopover}
-        onVisibleChange={() => setSearchPopover(old => !old)}
+        open={searchPopover}
+        onOpenChange={() => setSearchPopover(old => !old)}
       >
         <Button
           type={searchPopover ? 'danger' : 'primary'}
@@ -219,8 +219,8 @@ const Toolbox: FC<IToolboxProps> = ({ ...props }) => {
         content={mobileContent}
         placement="bottom"
         trigger="click"
-        visible={toolboxPopover}
-        onVisibleChange={() => setToolboxPopover(old => !old)}
+        open={toolboxPopover}
+        onOpenChange={() => setToolboxPopover(old => !old)}
       >
         <Button
           type={toolboxPopover ? 'danger' : 'primary'}

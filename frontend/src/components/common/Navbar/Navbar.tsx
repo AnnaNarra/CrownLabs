@@ -163,7 +163,7 @@ const Navbar: FC<INavbarProps> = ({ ...props }) => {
           backgroundColor: 'var(--bg-cl-navbar)',
         }}
         placement="top"
-        visible={show}
+        open={show}
         onClose={() => setShow(false)}
         height={76 + 52 * routes.length + 25}
         closeIcon={null}

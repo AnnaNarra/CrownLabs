@@ -1,5 +1,5 @@
 # Builder image for the frontend
-FROM node:14-alpine as builder
+FROM node:18-alpine as builder
 
 ## Switch to an unprivileged user (avoids problems with npm)
 USER node
@@ -8,14 +8,13 @@ USER node
 RUN mkdir --parent /tmp/frontend
 WORKDIR /tmp/frontend
 
-COPY --chown=node:node ./package.json /tmp/frontend/package.json
-COPY --chown=node:node ./yarn.lock /tmp/frontend/yarn.lock
-RUN yarn install
+COPY --chown=node:node ./package*.json /tmp/frontend/
+RUN npm install
 
 ARG BUILD_TARGET
 ARG SUBROUTE="/"
 
-ENV PUBLIC_URL=${SUBROUTE}
+ENV BASE_URL=${SUBROUTE}
 
 COPY --chown=node:node . /tmp/frontend/
 RUN yarn build-${BUILD_TARGET}

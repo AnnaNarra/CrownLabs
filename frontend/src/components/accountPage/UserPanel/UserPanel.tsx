@@ -56,7 +56,7 @@ const UserPanel: FC<IUserPanelProps> = props => {
             </Button>
             <Modal
               title="New SSH key"
-              visible={showSSHModal}
+              open={showSSHModal}
               footer={null}
               onCancel={closeModal}
             >

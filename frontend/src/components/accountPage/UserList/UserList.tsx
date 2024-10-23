@@ -200,7 +200,7 @@ const UserList: FC<IUserListProps> = props => {
         <Modal
           destroyOnClose={true}
           title="Add new User"
-          visible={showUserListModal}
+          open={showUserListModal}
           footer={null}
           onCancel={closeModal}
         >

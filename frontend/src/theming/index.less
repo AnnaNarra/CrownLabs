@@ -1,5 +1,5 @@
-@import '~antd/dist/antd.dark.less';
 @import 'antd-button-color/dist/css/style.less';
+@import './colors.less';
 
 .primary-color-fg {
   color: @primary-color;
@@ -31,6 +31,26 @@
 
 .danger-color-bg {
   background-color: @error-color;
+}
+
+.ant-btn-primary.ant-btn-background-ghost:disabled,
+.ant-btn-default:disabled,
+.ant-btn-primary.ant-btn-disabled,
+.ant-btn-default.ant-btn-disabled {
+  color: #777 !important;
+  background-color: #252525 !important;
+}
+
+.ant-badge-color-blue .ant-scroll-number-only-unit {
+  color: #fff;
+}
+
+color: @white;
+.ant-btn {
+  color: @white;
+}
+.ant-btn:hover {
+  color: #fff !important;
 }
 
 body {

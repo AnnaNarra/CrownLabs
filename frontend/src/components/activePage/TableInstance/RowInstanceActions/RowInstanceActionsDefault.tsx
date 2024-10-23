@@ -121,7 +121,8 @@ const RowInstanceActionsDefault: FC<IRowInstanceActionsDefaultProps> = ({
             key={1}
             shape="round"
             className="ml-2 w-24"
-            type="danger"
+            type="primary"
+            danger
             onClick={() =>
               deleteInstanceMutation({
                 variables: {
