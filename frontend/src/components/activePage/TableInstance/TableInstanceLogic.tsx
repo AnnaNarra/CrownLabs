@@ -13,7 +13,7 @@ import {
 import { updatedOwnedInstances } from '../../../graphql-components/subscription';
 import { TenantContext } from '../../../contexts/TenantContext';
 import { matchK8sObject, replaceK8sObject } from '../../../k8sUtils';
-import { Instance, User, WorkspaceRole } from '../../../utils';
+import { Instance, User, Workspace, WorkspaceRole } from '../../../utils';
 import {
   getSubObjTypeK8s,
   makeGuiInstance,
@@ -28,12 +28,13 @@ export interface ITableInstanceLogicProps {
   showGuiIcon: boolean;
   extended: boolean;
   user: User;
+  workspaces: Array<Workspace>;
 }
 
 const fetchPolicy_networkOnly: FetchPolicy = 'network-only';
 
 const TableInstanceLogic: FC<ITableInstanceLogicProps> = ({ ...props }) => {
-  const { viewMode, extended, showGuiIcon, user } = props;
+  const { viewMode, extended, showGuiIcon, user, workspaces } = props;
   const { makeErrorCatcher, apolloErrorCatcher, errorsQueue } =
     useContext(ErrorContext);
   const { tenantNamespace, tenantId } = user;
@@ -153,6 +154,7 @@ const TableInstanceLogic: FC<ITableInstanceLogicProps> = ({ ...props }) => {
             extended={extended}
             handleSorting={handleSorting}
             showAdvanced={true}
+            workspaces={workspaces}
           />
         ) : (
           <div className="w-full h-full flex-grow flex flex-wrap content-center justify-center py-5 ">

@@ -2622,7 +2622,7 @@ export type InstanceSnapshotListQueryVariables = Exact<{
 }>;
 
 
-export type InstanceSnapshotListQuery = { __typename?: 'Query', instanceSnapshots?: { __typename?: 'ItPolitoCrownlabsV1alpha2InstanceSnapshotList', snapshots?: Array<{ __typename?: 'ItPolitoCrownlabsV1alpha2InstanceSnapshot', metadata?: { __typename?: 'IoK8sApimachineryPkgApisMetaV1ObjectMeta', namespace?: string | null, name?: string | null } | null, spec?: { __typename?: 'Spec4', imageName?: string | null, instanceRef?: { __typename?: 'InstanceRef', name?: string | null, namespace?: string | null } | null } | null } | null> | null } | null };
+export type InstanceSnapshotListQuery = { __typename?: 'Query', instanceSnapshots?: { __typename?: 'ItPolitoCrownlabsV1alpha2InstanceSnapshotList', snapshots?: Array<{ __typename?: 'ItPolitoCrownlabsV1alpha2InstanceSnapshot', metadata?: { __typename?: 'IoK8sApimachineryPkgApisMetaV1ObjectMeta', namespace?: string | null, name?: string | null, annotations?: any | null } | null, spec?: { __typename?: 'Spec4', imageName?: string | null, instanceRef?: { __typename?: 'InstanceRef', name?: string | null, namespace?: string | null } | null } | null, status?: { __typename?: 'Status3', phase?: string | null } | null } | null> | null } | null };
 
 export type WorkspaceTemplatesQueryVariables = Exact<{
   workspaceNamespace: Scalars['String']['input'];
@@ -2645,6 +2645,13 @@ export type TenantsQueryVariables = Exact<{
 
 
 export type TenantsQuery = { __typename?: 'Query', tenants?: { __typename?: 'ItPolitoCrownlabsV1alpha2TenantList', items?: Array<{ __typename?: 'ItPolitoCrownlabsV1alpha2Tenant', metadata?: { __typename?: 'IoK8sApimachineryPkgApisMetaV1ObjectMeta', name?: string | null } | null, spec?: { __typename?: 'Spec6', firstName?: string | null, lastName?: string | null, email?: string | null, workspaces?: Array<{ __typename?: 'WorkspacesListItem', role?: Role | null, name?: string | null } | null> | null } | null } | null> | null } | null };
+
+export type WorkspacesQueryVariables = Exact<{
+  labels?: InputMaybe<Scalars['String']['input']>;
+}>;
+
+
+export type WorkspacesQuery = { __typename?: 'Query', workspaces?: { __typename?: 'ItPolitoCrownlabsV1alpha1WorkspaceList', items?: Array<{ __typename?: 'ItPolitoCrownlabsV1alpha1Workspace', metadata?: { __typename?: 'IoK8sApimachineryPkgApisMetaV1ObjectMeta', name?: string | null } | null, spec?: { __typename?: 'Spec2', prettyName?: string | null, autoEnroll?: AutoEnroll | null } | null } | null> | null } | null };
 
 export type UpdatedOwnedInstancesSubscriptionVariables = Exact<{
   tenantNamespace: Scalars['String']['input'];
@@ -3413,6 +3420,7 @@ export const InstanceSnapshotListDocument = gql`
       metadata {
         namespace
         name
+        annotations
       }
       spec {
         imageName
@@ -3420,6 +3428,9 @@ export const InstanceSnapshotListDocument = gql`
           name
           namespace
         }
+      }
+      status {
+        phase
       }
     }
   }
@@ -3675,6 +3686,60 @@ export type TenantsQueryHookResult = ReturnType<typeof useTenantsQuery>;
 export type TenantsLazyQueryHookResult = ReturnType<typeof useTenantsLazyQuery>;
 export type TenantsSuspenseQueryHookResult = ReturnType<typeof useTenantsSuspenseQuery>;
 export type TenantsQueryResult = Apollo.QueryResult<TenantsQuery, TenantsQueryVariables>;
+export const WorkspacesDocument = gql`
+    query workspaces($labels: String) {
+  workspaces: itPolitoCrownlabsV1alpha1WorkspaceList(labelSelector: $labels) {
+    items {
+      metadata {
+        name
+      }
+      spec {
+        prettyName
+        autoEnroll
+      }
+    }
+  }
+}
+    `;
+export type WorkspacesComponentProps = Omit<ApolloReactComponents.QueryComponentOptions<WorkspacesQuery, WorkspacesQueryVariables>, 'query'>;
+
+    export const WorkspacesComponent = (props: WorkspacesComponentProps) => (
+      <ApolloReactComponents.Query<WorkspacesQuery, WorkspacesQueryVariables> query={WorkspacesDocument} {...props} />
+    );
+    
+
+/**
+ * __useWorkspacesQuery__
+ *
+ * To run a query within a React component, call `useWorkspacesQuery` and pass it any options that fit your needs.
+ * When your component renders, `useWorkspacesQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useWorkspacesQuery({
+ *   variables: {
+ *      labels: // value for 'labels'
+ *   },
+ * });
+ */
+export function useWorkspacesQuery(baseOptions?: Apollo.QueryHookOptions<WorkspacesQuery, WorkspacesQueryVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useQuery<WorkspacesQuery, WorkspacesQueryVariables>(WorkspacesDocument, options);
+      }
+export function useWorkspacesLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<WorkspacesQuery, WorkspacesQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useLazyQuery<WorkspacesQuery, WorkspacesQueryVariables>(WorkspacesDocument, options);
+        }
+export function useWorkspacesSuspenseQuery(baseOptions?: Apollo.SuspenseQueryHookOptions<WorkspacesQuery, WorkspacesQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useSuspenseQuery<WorkspacesQuery, WorkspacesQueryVariables>(WorkspacesDocument, options);
+        }
+export type WorkspacesQueryHookResult = ReturnType<typeof useWorkspacesQuery>;
+export type WorkspacesLazyQueryHookResult = ReturnType<typeof useWorkspacesLazyQuery>;
+export type WorkspacesSuspenseQueryHookResult = ReturnType<typeof useWorkspacesSuspenseQuery>;
+export type WorkspacesQueryResult = Apollo.QueryResult<WorkspacesQuery, WorkspacesQueryVariables>;
 export const UpdatedOwnedInstancesDocument = gql`
     subscription updatedOwnedInstances($tenantNamespace: String!, $instanceId: String) {
   updateInstance: itPolitoCrownlabsV1alpha2InstanceUpdate(

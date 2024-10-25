@@ -94,7 +94,7 @@ const RowInstanceTitle: FC<IRowInstanceTitleProps> = ({ ...props }) => {
             )}
           <RowInstanceStatus status={status} />
 
-          {viewMode === 'manager' ? (
+          {(extended && viewMode === 'manager') ? (
             <div className="flex items-center gap-4">
               <Text className="w-32">{tenantId}</Text>
               <Text className="hidden w-max lg:w-32 2xl:w-40 md:block" ellipsis>

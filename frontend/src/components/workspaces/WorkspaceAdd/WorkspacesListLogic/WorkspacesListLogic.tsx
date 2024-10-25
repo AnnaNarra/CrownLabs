@@ -13,7 +13,7 @@ import {
   WorkspacesAvailable,
   WorkspacesAvailableAction,
 } from '../../../../utils';
-import { AuthContext } from '../../../../contexts/AuthContext';
+import { useAuth } from 'react-oidc-context';
 import { getTenantPatchJson } from '../../../../graphql-components/utils';
 import { ErrorTypes, SupportedError } from '../../../../errorHandling/utils';
 
@@ -23,7 +23,8 @@ const WorkspaceListLogic: FC<IWorkspaceListLogicProps> = ({ ...args }) => {
   const { apolloErrorCatcher, makeErrorCatcher } = useContext(ErrorContext);
   const genericErrorCatcher = makeErrorCatcher(ErrorTypes.GenericError);
 
-  const { userId } = useContext(AuthContext);
+  const auth = useAuth();
+  const userId = auth.user?.profile.preferred_username;
   const { data: tenantData } = useContext(TenantContext);
 
   const { data, loading, error } = useWorkspacesQuery({

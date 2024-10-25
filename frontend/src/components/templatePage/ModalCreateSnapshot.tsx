@@ -50,6 +50,7 @@ const ModalCreateSnapshot: FC<IModalCreateSnapshotProps> = ({ ...props }) => {
   } = props;
   
   const [buttonDisabled, setButtonDisabled] = useState(true);
+  const [showDisclaimer, setShowDisclaimer] = useState(false);
 
   const [formSnapshot, setFormSnapshot] = useState<Snapshot>({
     name:  undefined, 
@@ -62,6 +63,7 @@ const ModalCreateSnapshot: FC<IModalCreateSnapshotProps> = ({ ...props }) => {
 
   const closehandler = () => {
     setShow(false); 
+    setShowDisclaimer(false);
   };
 
   const [valid, setValid] = useState<Valid>({
@@ -73,7 +75,7 @@ const ModalCreateSnapshot: FC<IModalCreateSnapshotProps> = ({ ...props }) => {
       setValid(old => {
         return {
           ...old,
-          name: { status: 'error', help: 'Please insert snapshot name' },
+          name: { status: 'error', help: 'Please insert image name' },
         };
       });
     } else if (
@@ -144,113 +146,119 @@ const ModalCreateSnapshot: FC<IModalCreateSnapshotProps> = ({ ...props }) => {
     <>
       <Modal
         destroyOnClose={true}
-        title="Save customized model"
+        title="Save a new image"
+        centered
         open={show}
         footer={null}
         confirmLoading={loading}
         onCancel={closehandler}
       >
-        <Space direction="vertical" size="middle" style={{ display: 'flex' }}>
-          <Text italic type="secondary">Create a snapshot image of the VM to use it as creation base for a new template. Make sure of deleting any unneccessary file to save the cleanest possible model.</Text>
-          <Form
-            labelCol={{ span: 3 }}
-            wrapperCol={{ span: 21 }}
-            onSubmitCapture={() => {
-              submitHandler({
-                ...formSnapshot,
-              })
-                .then(() => {
-                  setShow(false);
-                  setFormSnapshot(old => {
-                    return { ...old, name: undefined, description: undefined };
-                  });
+        {showDisclaimer ? 
+          <Space align="center" direction="vertical" size="middle" style={{ display: 'flex' }}>
+            <Text type="warning">The saving process can take up to 10-15 minutes. You will be notified upon completion, right next to the instance you created it from.</Text>
+          </Space>
+          :<Space direction="vertical" size="middle" style={{ display: 'flex' }}>
+            <Text italic type="secondary">Create a snapshot image of the VM to use it as the base image for a new template. Make sure of deleting any unneccessary file to save the cleanest possible image.</Text>
+            <Form
+              labelCol={{ span: 3 }}
+              wrapperCol={{ span: 21 }}
+              onSubmitCapture={() => {
+                submitHandler({
+                  ...formSnapshot,
                 })
-                .catch(apolloErrorCatcher);
-            }}
-          >
-            <Form.Item
-              {...fullLayout}
-              name="snapshotname"
-              label="Name:"
-              className="mt-1"
-              required
-              validateStatus={valid.name.status as 'success' | 'error'} 
-              help={valid.name.help}
-              validateTrigger="onChange"
-              rules={[
-                {
-                  required: true,
-                  validator: nameValidator,
-                },
-              ]}
-            >
-              <Input
-                onFocus={() => refetchSnapshots({ tenantNamespace })} 
-                onChange={e =>
-                  setFormSnapshot(old => {
-                    return { ...old, name: e.target.value.toLowerCase(), imageName: e.target.value };
+                  .then(() => {
+                    setShowDisclaimer(true);//setShow(false);
+                    setFormSnapshot(old => {
+                      return { ...old, name: undefined, description: undefined };
+                    });
                   })
-                }
-                placeholder="Insert the name of the new model"
-                allowClear
-              />
-            </Form.Item>
-            <Form.Item
-              {...fullLayout}
-              name="snapshot description"
-              className="mt-1"
-              required
-              rules={[
-                {
-                  required: true,
-                },
-              ]}
+                  .catch(apolloErrorCatcher);
+              }}
             >
-              <Input.TextArea 
-                placeholder="Insert a description for the model" 
-                allowClear 
-                onChange={e =>
-                  setFormSnapshot(old => {
-                    return { ...old, description: e.target.value };
-                  })
-                } 
-              />
+              <Form.Item
+                {...fullLayout}
+                name="snapshotname"
+                label="Name:"
+                className="mt-1"
+                required
+                validateStatus={valid.name.status as 'success' | 'error'} 
+                help={valid.name.help}
+                validateTrigger="onChange"
+                rules={[
+                  {
+                    required: true,
+                    validator: nameValidator,
+                  },
+                ]}
+              >
+                <Input
+                  onFocus={() => refetchSnapshots({ tenantNamespace })} 
+                  onChange={e =>
+                    setFormSnapshot(old => {
+                      return { ...old, name: e.target.value.toLowerCase(), imageName: e.target.value };
+                    })
+                  }
+                  placeholder="Insert the name of the new image"
+                  allowClear
+                />
+              </Form.Item>
+              <Form.Item
+                {...fullLayout}
+                name="image description"
+                className="mt-1"
+                required
+                rules={[
+                  {
+                    required: true,
+                  },
+                ]}
+              >
+                <Input.TextArea 
+                  placeholder="Insert a description for the image" 
+                  allowClear 
+                  onChange={e =>
+                    setFormSnapshot(old => {
+                      return { ...old, description: e.target.value };
+                    })
+                  } 
+                />
+              </Form.Item>
+              <Form.Item {...fullLayout}>
+              <div className="flex justify-center">
+                {buttonDisabled ? (
+                  <Tooltip
+                    title={'Impossible to save the image, please fill out all the fields'}
+                  >
+                    <span className="cursor-not-allowed">
+                      <Button
+                        className="w-24 pointer-events-none"
+                        disabled
+                        htmlType="submit"
+                        type="primary"
+                        shape="round"
+                        size="middle"
+                      >
+                        {'Save'}
+                      </Button>
+                    </span>
+                  </Tooltip>
+                ) : (
+                  <Button
+                    className="w-24"
+                    htmlType="submit"
+                    type="primary"
+                    shape="round"
+                    size="middle"
+                    loading={loading}
+                  >
+                    {!loading && 'Save'}
+                  </Button>
+                )}
+              </div>
             </Form.Item>
-            <Form.Item {...fullLayout}>
-            <div className="flex justify-center">
-              {buttonDisabled ? (
-                <Tooltip
-                  title={'Impossible to save the model, please fill out all the fields'}
-                >
-                  <span className="cursor-not-allowed">
-                    <Button
-                      className="w-24 pointer-events-none"
-                      disabled
-                      htmlType="submit"
-                      type="primary"
-                      shape="round"
-                      size="middle"
-                    >
-                      {'Save'}
-                    </Button>
-                  </span>
-                </Tooltip>
-              ) : (
-                <Button
-                  className="w-24"
-                  htmlType="submit"
-                  type="primary"
-                  shape="round"
-                  size="middle"
-                  loading={loading}
-                >
-                  {!loading && 'Save'}
-                </Button>
-              )}
-            </div>
-          </Form.Item>
-          </Form>
-        </Space>
+            </Form>
+          </Space>
+          }
       </Modal>
     </>
   );

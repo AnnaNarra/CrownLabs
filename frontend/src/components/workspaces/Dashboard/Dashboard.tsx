@@ -42,7 +42,7 @@ const Dashboard: FC<IDashboardProps> = ({ ...props }) => {
           {candidatesButton?.show && (
             <div className="lg:mt-4 mt-0 text-center">
               <Button
-                type="ghost"
+                ghost
                 shape="round"
                 size={'middle'}
                 onClick={candidatesButton.select}

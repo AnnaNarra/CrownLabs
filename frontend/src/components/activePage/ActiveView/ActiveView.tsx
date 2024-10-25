@@ -138,6 +138,7 @@ const ActiveView: FC<IActiveViewProps> = ({ ...props }) => {
             user={user}
             viewMode={currentView}
             extended={true}
+            workspaces={workspaces}
           />
         )}
       </Box>

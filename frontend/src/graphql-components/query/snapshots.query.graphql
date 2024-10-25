@@ -6,6 +6,7 @@ query instanceSnapshotList($tenantNamespace: String!) {
       metadata {
         namespace
         name
+        annotations
       }
       spec {
         imageName
@@ -13,6 +14,9 @@ query instanceSnapshotList($tenantNamespace: String!) {
           name
           namespace
         }
+      }
+      status {
+        phase
       }
     }
   }

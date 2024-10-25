@@ -86,16 +86,17 @@ const RowInstanceActionsPersistent: FC<IRowInstanceActionsPersistentProps> = ({
         },
       },
     });
-
+  
   return <>
-    <ModalCreateSnapshot
+    {viewMode === WorkspaceRole.manager ? (<ModalCreateSnapshot
       tenantNamespace={instance.tenantNamespace}
       instanceName={instance.id}
       show={show}
       setShow={setShow}
       submitHandler={submitHandler}
       loading={loading}
-    />
+    />)
+    : (<></>)}
     {status === Phase.Ready || status === Phase.ResourceQuotaExceeded ? (
       <Tooltip placement="top" title="Pause">
         <Button
@@ -159,28 +160,29 @@ const RowInstanceActionsPersistent: FC<IRowInstanceActionsPersistentProps> = ({
       </Tooltip>
     )
     }
-    <Tooltip placement="top" title={"Save a new image"}>
-      <div
+    {viewMode === WorkspaceRole.manager ? (
+      <Tooltip placement="top" title={"Save a new image"}>
+        <div
         className={`hidden ${
           extended ? 
             viewMode === WorkspaceRole.manager ? 'xl:block' : 'lg:block'
             : 'sm:block '
         } ${status === Phase.Off ? '' : 'cursor-not-allowed'}`}
-      >
-        <Button
-          className={`${status === Phase.Off ? '' : 'pointer-events-none'}`}
-          type={classFromProps()}
-          shape="round"
-          size="middle"
-          onClick={() => {
-            setShow(true);
-          }}
-          disabled={status !== Phase.Off}
         >
-          Save
-        </Button>
-      </div>
-      <div
+          <Button
+            className={`${status === Phase.Off ? '' : 'pointer-events-none'}`}
+            type={classFromProps()}
+            shape="round"
+            size="middle"
+            onClick={() => {
+              setShow(true);
+            }}
+            disabled={status !== Phase.Off}
+          >
+            Snapshot
+          </Button>
+        </div>
+        <div
         className={`hidden ${
           extended
             ? `sm:block ${
@@ -188,30 +190,34 @@ const RowInstanceActionsPersistent: FC<IRowInstanceActionsPersistentProps> = ({
               }`
             : 'xs:block sm:hidden'
         } block flex items-center ${
-          status === Phase.Off ? '' : 'cursor-not-allowed'
-        }`}
-      >
-        <Button
-          className={`${
-            status === Phase.Off ? '' : 'pointer-events-none'
-          } flex items-center justify-center p-0 border-0`}
-          with={!extended ? 'link' : undefined}
-          type={classFromPropsMobile()}
-          shape="circle"
-          size="middle"
-          onClick={() => {
-            setShow(true);
-          }}
-          disabled={status !== Phase.Off}
-          icon={
-            <SaveOutlined
-              className="flex items-center justify-center"
-              style={font22px}
-            />
-          }
-        />
-      </div>
-    </Tooltip>
+            status === Phase.Off ? '' : 'cursor-not-allowed'
+          }`}
+        >
+          <Button
+            className={`${
+              status === Phase.Off ? '' : 'pointer-events-none'
+            } flex items-center justify-center p-0 border-0`}
+            with={!extended ? 'link' : undefined}
+            type={classFromPropsMobile()}
+            shape="circle"
+            size="middle"
+            onClick={() => {
+              setShow(true);
+            }}
+            disabled={status !== Phase.Off}
+            icon={
+              <SaveOutlined
+                className="flex items-center justify-center"
+                style={font22px}
+              />
+            }
+          />
+        </div>
+      </Tooltip>)
+    : (
+      <></>
+    )
+    }
   </>
   ;
 };

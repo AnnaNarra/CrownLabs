@@ -1,11 +1,10 @@
 import { DeleteOutlined } from '@ant-design/icons';
-import { Table } from 'antd';
-import Button from 'antd-button-color';
+import { Table, Button } from 'antd';
 import { FC, useContext, useState } from 'react';
 import { ErrorContext } from '../../../errorHandling/ErrorContext';
 import { useDeleteInstanceMutation } from '../../../generated-types';
 import { TenantContext } from '../../../contexts/TenantContext';
-import { Instance, WorkspaceRole } from '../../../utils';
+import { Instance, Workspace, WorkspaceRole } from '../../../utils';
 import ModalGroupDeletion from '../ModalGroupDeletion/ModalGroupDeletion';
 import RowInstanceActions from './RowInstanceActions/RowInstanceActions';
 import RowInstanceHeader from './RowInstanceHeader/RowInstanceHeader';
@@ -21,6 +20,7 @@ export interface ITableInstanceProps {
   extended: boolean;
   showAdvanced?: boolean;
   showCheckbox?: boolean;
+  workspaces?: Array<Workspace>;
   handleSorting?: (sortingType: string, sorting: number) => void;
   handleManagerSorting?: (
     sortingType: string,
@@ -40,6 +40,7 @@ const TableInstance: FC<ITableInstanceProps> = ({ ...props }) => {
     showGuiIcon,
     showAdvanced,
     showCheckbox,
+    workspaces,
     handleSorting,
     handleManagerSorting,
     selectiveDestroy,
@@ -88,6 +89,10 @@ const TableInstance: FC<ITableInstanceProps> = ({ ...props }) => {
   };
 
   const [{ templateId }] = instances;
+
+  const setInstanceRole = (i: Instance) => {
+    return (workspaces?.find(w => w.name === i.workspaceName)) ? WorkspaceRole.manager : viewMode;
+  };
 
   return (
     <>
@@ -176,7 +181,7 @@ const TableInstance: FC<ITableInstanceProps> = ({ ...props }) => {
                 now={now}
                 fileManager={true}
                 extended={extended}
-                viewMode={viewMode}
+                viewMode={setInstanceRole(instance)}//{viewMode}
               />
             )}
           />

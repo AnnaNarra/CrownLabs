@@ -176,11 +176,7 @@ const RowInstanceHeader: FC<IRowInstanceHeaderProps> = ({ ...props }) => {
       >
         <div className="w-full flex items-center justify-end sm:justify-between">
           <div
-            className={`flex justify-between items-center ${
-              viewMode === WorkspaceRole.manager
-                ? 'lg:w-2/5 xl:w-7/12 2xl:w-1/2'
-                : 'lg:w-1/3 xl:w-1/2'
-            }`}
+            className={`flex justify-between items-center lg:w-1/4 xl:w-2/5`}
           >
             <div className="flex items-center justify-center hidden sm:block w-12 xl:w-40 text-center">
               <Text strong>Utils</Text>

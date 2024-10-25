@@ -51,7 +51,7 @@ const RowInstanceActions: FC<IRowInstanceActionsProps> = ({ ...props }) => {
   };
 
   const fieldsDropdown = { instance, setSshModal, fileManager, extended };
-
+console.log(viewMode)
   return (
     <>
       <div
@@ -61,11 +61,7 @@ const RowInstanceActions: FC<IRowInstanceActionsProps> = ({ ...props }) => {
       >
         {extended && (
           <div
-            className={`flex justify-between items-center ${
-              viewMode === WorkspaceRole.manager
-                ? 'lg:w-2/5 xl:w-7/12 2xl:w-1/2'
-                : 'lg:w-1/3 xl:w-1/2'
-            }`}
+            className={`flex justify-between items-center lg:w-1/4 xl:w-2/5`}
           >
             <RowInstanceActionsExtended
               setSshModal={setSshModal}
@@ -83,7 +79,7 @@ const RowInstanceActions: FC<IRowInstanceActionsProps> = ({ ...props }) => {
             viewMode === WorkspaceRole.manager
               ? 'lg:w-3/5 xl:w-5/12 2xl:w-1/2'
               : 'lg:w-2/3 xl:w-1/2'
-          } ${extended ? 'pr-2' : ''}`}
+          } ${extended ? 'pr-1' : ''}`}
         >
           {!extended && <RowInstanceActionsDropdown {...fieldsDropdown} />}
           {persistent && (

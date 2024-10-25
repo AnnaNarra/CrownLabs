@@ -118,7 +118,7 @@ const TemplatesTable: FC<ITemplatesTableProps> = ({ ...props }) => {
           expandedRowRender: template => (
             <TableInstance
               showGuiIcon={false}
-              viewMode={WorkspaceRole.user}
+              viewMode={role}
               extended={false}
               instances={template.instances}
               hasSSHKeys={hasSSHKeys}
